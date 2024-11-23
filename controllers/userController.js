@@ -3,24 +3,33 @@ const jwt = require("jsonwebtoken");
 
 // Register a new user
 const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
-
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: "Please fill all fields" });
+  const { name, email, password, transfer, deposit, receive, send } = req.body;
+console.log(req.body);
+  // Check for missing fields
+  if (email ) {
+    return res.status(400).json({ message: "Please fill all required fields: name, email, password." });
   }
 
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "User already exists." });
     }
 
-    const user = new User({ name, email, password });
+    const user = new User({ name, email, password, transfer, deposit, receive, send });
     await user.save();
 
-    res.status(201).json({ message: "User created successfully" });
+    return res.status(201).json({ message: "User created successfully." });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    // Log the error for debugging
+    console.error("Error during user registration:", error);
+
+    // Differentiate between validation errors and general server errors
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ message: "Validation error: " + error.message });
+    }
+
+    return res.status(500).json({ message: "Server Error: Please try again later." });
   }
 };
 
