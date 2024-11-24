@@ -8,7 +8,7 @@ console.log(req.body);
   // Check for missing fields
   // if (email ) {
   //   return res.status(400).json({ message: "Please fill all required fields: name, email, password." });
-  // }
+  // };;;;;;;;;;;;;;;;;;;;;;
 
   try {
     const existingUser = await User.findOne({ email });
